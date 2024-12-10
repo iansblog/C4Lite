@@ -5,6 +5,10 @@ This project uses Docker Compose to run Structurizr Lite for visualizing and edi
 
 This documentation provides a guide to using the `up.ps1` and `down.ps1` scripts for managing a Docker-based Structurizr Lite instance. These scripts automate starting, stopping, and backing up the environment.
 
+## Helpfull Structurizr Visual Studio Code Extentions
+
+- [https://marketplace.visualstudio.com/items?itemName=ciarant.vscode-structurizr](https://marketplace.visualstudio.com/items?itemName=ciarant.vscode-structurizr)
+
 ---
 
 ## **Project Structure**
