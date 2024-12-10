@@ -1,0 +1,11 @@
+services:
+  structurizrlite:
+    image: structurizr/lite
+    container_name: structurizrlite
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./dsl:/usr/local/structurizr"
+    stdin_open: true
+    tty: true
+    restart: always
