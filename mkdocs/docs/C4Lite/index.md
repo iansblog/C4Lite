@@ -7,7 +7,7 @@ This project is a Docker-based setup for running Structurizr Lite, Mermaid Live 
 - [https://marketplace.visualstudio.com/items?itemName=ciarant.vscode-structurizr](https://marketplace.visualstudio.com/items?itemName=ciarant.vscode-structurizr)
 - [https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
 
-# Project Structure
+## Project Structure
 
 ## Overview
 This project uses Docker to run multiple services for documentation and diagram creation. Below is the detailed structure and configuration.

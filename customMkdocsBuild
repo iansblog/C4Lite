@@ -1,0 +1,11 @@
+# Use the squidfunk/mkdocs-material image as the base
+FROM squidfunk/mkdocs-material
+
+# Install the necessary plugins
+RUN pip install --no-cache-dir \
+  mkdocs-awesome-pages-plugin \
+  mkdocs-minify-plugin \
+  mkdocs-git-revision-date-localized-plugin \
+  mkdocs-bibtex \
+  mkdocs-img2fig-plugin \
+  mkdocs-mermaid2-plugin
