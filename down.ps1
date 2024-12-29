@@ -27,12 +27,32 @@ function Copy-FileIfExists {
     }
 }
 
+function Supports-ARM {
+    # This function checks if the system supports ARM architecture
+    $cpuInfo = Get-WmiObject Win32_Processor
+    foreach ($cpu in $cpuInfo) {
+        if ($cpu.Name -like "*ARM*" -or $cpu.Caption -like "*ARM*") {
+            return $true
+        }
+    }
+    return $false
+}
+
+# Navigate to the directory containing the docker-compose.yml file
+$scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
+Set-Location -Path $scriptDirectory
+
+# Stop Docker Compose services based on the processor architecture
+if (Supports-ARM) {
+    Write-Output "ARM architecture detected. Stopping Docker Compose services with docker-compose-ARM.yml..."
+    docker-compose -f docker-compose-ARM.yml down
+} else {
+    Write-Output "Stopping Docker Compose services with docker-compose.yml..."
+    docker-compose down
+}
+
 # Create the backup folder
 Create-FolderIfNotExists -folderPath $backupFolder
-
-# Stop and remove the Docker Compose services
-Write-Output "Stopping Docker Compose services..."
-docker-compose down
 
 # DSL Backup section
 $DSLbackupFolder = ".\Backup\$date\DSL"
@@ -54,3 +74,6 @@ $mkdocsSource = Join-Path $currentDirectory "mkdocs"
 Copy-FileIfExists -sourcePath $mkdocsSource -destinationPath $mkdocsBackupFolder
 
 Write-Output "Backup completed. Files are stored in '$backupFolder'."
+
+# Return to the initial directory
+Set-Location -Path $currentDirectory

@@ -1,5 +1,3 @@
-# C4Lite
-
 # Project Name: DiagramHub
 
 ## Overview

@@ -11,4 +11,4 @@
 - **Easy Deployment**: You can easily deploy your site to GitHub Pages, GitLab Pages, or any static hosting provider.
 
 # Table of contents 
-- [C4 Lite documentation (this should be open in VS Code already)](./C4Lite/index.md)
+- [C4 Lite documentation (this should be open in VS Code already)](./DiagramHub/index.md)
