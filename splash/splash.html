@@ -1,175 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Service Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    .card-unavailable {
-      border: 2px solid red;
-      background-color: #f8d7da;
-      color: #842029;
-    }
-    .card-unavailable .btn {
-      pointer-events: none;
-      opacity: 0.7;
-    }
-  </style>
-</head>
-<body>
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">Service Dashboard</h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-
-      <!-- Structurizr Lite -->
-      <div class="col">
-        <div class="card shadow-sm service-card" data-url="http://localhost:8080">
-          <div class="card-body text-center">
-            <i class="fas fa-project-diagram fa-4x mb-3"></i>
-            <h5 class="card-title">Structurizr Lite</h5>
-            <p class="card-text">Create and edit C4-style architecture diagrams.</p>
-            <a href="http://localhost:8080" class="btn btn-primary" target="_blank">Open Structurizr</a>
-            <p class="status-message mt-2"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mermaid Live Editor -->
-      <div class="col">
-        <div class="card shadow-sm service-card" data-url="http://localhost:8081">
-          <div class="card-body text-center">
-            <i class="fas fa-pencil-ruler fa-4x mb-3"></i>
-            <h5 class="card-title">Mermaid Live Editor</h5>
-            <p class="card-text">Create diagrams and visualizations using Mermaid.js.</p>
-            <a href="http://localhost:8081" class="btn btn-primary" target="_blank">Open Mermaid Editor</a>
-            <p class="status-message mt-2"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- MkDocs -->
-      <div class="col">
-        <div class="card shadow-sm service-card" data-url="http://localhost:8082">
-          <div class="card-body text-center">
-            <i class="fas fa-file-alt fa-4x mb-3"></i>
-            <h5 class="card-title">MkDocs</h5>
-            <p class="card-text">Generate and serve static documentation sites.</p>
-            <a href="http://localhost:8082" class="btn btn-primary" target="_blank">Open MkDocs</a>
-            <p class="status-message mt-2"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- PlantUML Server -->
-      <div class="col">
-        <div class="card shadow-sm service-card" data-url="http://localhost:8083">
-          <div class="card-body text-center">
-            <i class="fas fa-draw-polygon fa-4x mb-3"></i>
-            <h5 class="card-title">PlantUML Server</h5>
-            <p class="card-text">Generate UML diagrams using PlantUML.</p>
-            <a href="http://localhost:8083" class="btn btn-primary" target="_blank">Open PlantUML Server</a>
-            <p class="status-message mt-2"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Draw.io -->
-      <div class="col">
-        <div class="card shadow-sm service-card" data-url="http://localhost:8084">
-          <div class="card-body text-center">
-            <i class="fas fa-draw-polygon fa-4x mb-3"></i>
-            <h5 class="card-title">Draw.io</h5>
-            <p class="card-text">Create diagrams and visualizations using Draw.io.</p>
-            <a href="http://localhost:8084" class="btn btn-primary" target="_blank">Open Draw.io</a>
-            <p class="status-message mt-2"></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- StackEdit -->
-      <div class="col">
-        <div class="card shadow-sm service-card" data-url="http://localhost:8085">
-          <div class="card-body text-center">
-            <i class="fas fa-edit fa-4x mb-3"></i>
-            <h5 class="card-title">StackEdit</h5>
-            <p class="card-text">Online Markdown editor with real-time collaboration.</p>
-            <a href="http://localhost:8085" class="btn btn-primary" target="_blank">Open StackEdit</a>
-            <p class="status-message mt-2"></p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    const retryInterval = 5000; // Retry every 5 seconds
-    let countdownTimers = {};
-
-    async function checkServiceAvailability(url) {
-      try {
-        const response = await fetch(url, {
-          method: 'GET',
-          mode: 'no-cors', // Use 'no-cors' if the services are not on the same origin
-        });
-
-        // Assume service is available if no error is thrown
-        return response.ok || response.type === 'opaque';
-      } catch (error) {
-        return false; // Service is unavailable
-      }
-    }
-
-    function updateCardStatus(card, isAvailable) {
-      const button = card.querySelector('.btn');
-      const statusMessage = card.querySelector('.status-message');
-
-      if (isAvailable) {
-        card.classList.remove('card-unavailable');
-        button.classList.remove('disabled');
-        button.removeAttribute('disabled');
-        statusMessage.textContent = 'Service is available.';
-        clearInterval(countdownTimers[card.getAttribute('data-url')]);
-      } else {
-        card.classList.add('card-unavailable');
-        button.classList.add('disabled');
-        button.setAttribute('disabled', true);
-        startCountdown(card);
-      }
-    }
-
-    function startCountdown(card) {
-      const url = card.getAttribute('data-url');
-      const statusMessage = card.querySelector('.status-message');
-      let remainingTime = retryInterval / 1000;
-
-      clearInterval(countdownTimers[url]);
-
-      countdownTimers[url] = setInterval(() => {
-        if (remainingTime <= 0) {
-          clearInterval(countdownTimers[url]);
-          statusMessage.textContent = 'Checking service availability...';
-        } else {
-          statusMessage.textContent = `Waiting for service, retrying in ${remainingTime--} seconds...`;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagram Hub Service Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #50e3c2;
+            --text-color: #333;
+            --bg-light: #f7f9fc;
+            --bg-dark: #283e4a;
+            --bg-card: #ffffff;
+            --card-border: #e1e8ed;
+            --error-bg: #fbe9e7;
+            --error-text: #d93025;
         }
-      }, 1000);
-    }
 
-    function checkServices() {
-      const cards = document.querySelectorAll('.service-card');
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-color);
+        }
 
-      cards.forEach(async (card) => {
-        const url = card.getAttribute('data-url');
-        const isAvailable = await checkServiceAvailability(url);
-        updateCardStatus(card, isAvailable);
-      });
-    }
+        header {
+            background-color: var(--bg-dark);
+            color: var(--bg-light);
+        }
 
-    // Initial check and periodic retry
-    checkServices();
-    setInterval(checkServices, retryInterval);
-  </script>
+        footer {
+            background-color: var(--bg-dark);
+            color: var(--bg-light);
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: darken(var(--primary-color), 10%);
+            border-color: darken(var(--primary-color), 10%);
+        }
+
+        .card-down {
+            border-color: var(--error-text);
+            background-color: var(--error-bg);
+            color: var(--error-text);
+        }
+
+        .card-down .btn {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .status-message {
+            font-size: 0.9rem;
+        }
+
+        h1, h2 {
+            font-weight: 700;
+        }
+
+        a {
+            color: var(--primary-color);
+        }
+
+        a:hover {
+            color: darken(var(--primary-color), 10%);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="py-3">
+        <div class="container text-center">
+            <h1><i class="fas fa-network-wired"></i> Diagram Hub Service Dashboard</h1>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <section>
+            <h2 class="mb-3">Documentation</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <!-- MkDocs -->
+                <div class="col">
+                    <div class="card shadow-sm service-card" data-url="http://localhost:8082">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-alt fa-4x mb-3"></i>
+                            <h5 class="card-title">MkDocs</h5>
+                            <p class="card-text">Generate and serve static documentation sites.</p>
+                            <a href="http://localhost:8082" class="btn btn-primary" target="_blank">Open MkDocs</a>
+                            <p class="status-message mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- StackEdit -->
+                <div class="col">
+                    <div class="card shadow-sm service-card" data-url="http://localhost:8085">
+                        <div class="card-body text-center">
+                            <i class="fas fa-edit fa-4x mb-3"></i>
+                            <h5 class="card-title">StackEdit</h5>
+                            <p class="card-text">Online Markdown editor with real-time collaboration.</p>
+                            <a href="http://localhost:8085" class="btn btn-primary" target="_blank">Open StackEdit</a>
+                            <p class="status-message mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-5">
+            <h2 class="mb-3">Diagrams as Code</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <!-- Structurizr -->
+                <div class="col">
+                    <div class="card shadow-sm service-card" data-url="http://localhost:8080">
+                        <div class="card-body text-center">
+                            <i class="fas fa-project-diagram fa-4x mb-3"></i>
+                            <h5 class="card-title">Structurizr</h5>
+                            <p class="card-text">Create and edit C4-style architecture diagrams.</p>
+                            <a href="http://localhost:8080" class="btn btn-primary" target="_blank">Open Structurizr</a>
+                            <p class="status-message mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mermaid.js -->
+                <div class="col">
+                    <div class="card shadow-sm service-card" data-url="http://localhost:8081">
+                        <div class="card-body text-center">
+                            <i class="fas fa-pencil-ruler fa-4x mb-3"></i>
+                            <h5 class="card-title">Mermaid.js</h5>
+                            <p class="card-text">Create diagrams and visualizations using Mermaid.js.</p>
+                            <a href="http://localhost:8081" class="btn btn-primary" target="_blank">Open Mermaid Editor</a>
+                            <p class="status-message mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PlantUML Server -->
+                <div class="col">
+                    <div class="card shadow-sm service-card" data-url="http://localhost:8083">
+                        <div class="card-body text-center">
+                            <i class="fas fa-draw-polygon fa-4x mb-3"></i>
+                            <h5 class="card-title">PlantUML Server</h5>
+                            <p class="card-text">Generate UML diagrams using PlantUML.</p>
+                            <a href="http://localhost:8083" class="btn btn-primary" target="_blank">Open PlantUML Server</a>
+                            <p class="status-message mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-5">
+            <h2 class="mb-3">Diagrams as Documentation</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <!-- Draw.io -->
+                <div class="col">
+                    <div class="card shadow-sm service-card" data-url="http://localhost:8084">
+                        <div class="card-body text-center">
+                            <i class="fas fa-draw-polygon fa-4x mb-3"></i>
+                            <h5 class="card-title">Draw.io</h5>
+                            <p class="card-text">Create diagrams and visualizations using Draw.io.</p>
+                            <a href="http://localhost:8084" class="btn btn-primary" target="_blank">Open Draw.io</a>
+                            <p class="status-message mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-3 mt-5">
+        <div class="container text-center">
+            <p>Diagram Hub</p>
+        </div>
+    </footer>
+
+    <script>
+        const retryInterval = 5000; // Retry every 5 seconds
+        let countdownTimers = {};
+
+        async function checkServiceAvailability(url) {
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'no-cors', // Use 'no-cors' if the services are not on the same origin
+                });
+
+                // Assume service is available if no error is thrown
+                return response.ok || response.type === 'opaque';
+            } catch (error) {
+                return false; // Service is unavailable
+            }
+        }
+
+        function updateCardStatus(card, isAvailable) {
+            const button = card.querySelector('.btn');
+            const statusMessage = card.querySelector('.status-message');
+
+            if (isAvailable) {
+                card.classList.remove('card-down');
+                button.classList.remove('disabled');
+                button.removeAttribute('disabled');
+                statusMessage.textContent = 'Service is available.';
+                clearInterval(countdownTimers[card.getAttribute('data-url')]);
+            } else {
+                card.classList.add('card-down');
+                button.classList.add('disabled');
+                button.setAttribute('disabled', true);
+                startCountdown(card);
+            }
+        }
+
+        function startCountdown(card) {
+            const url = card.getAttribute('data-url');
+            const statusMessage = card.querySelector('.status-message');
+            let remainingTime = retryInterval / 1000;
+
+            clearInterval(countdownTimers[url]);
+
+            countdownTimers[url] = setInterval(() => {
+                if (remainingTime <= 0) {
+                    clearInterval(countdownTimers[url]);
+                    statusMessage.textContent = 'Checking service availability...';
+                } else {
+                    statusMessage.textContent = `Waiting for service, retrying in ${remainingTime--} seconds...`;
+                }
+            }, 1000);
+        }
+
+        function checkServices() {
+            const cards = document.querySelectorAll('.service-card');
+
+            cards.forEach(async (card) => {
+                const url = card.getAttribute('data-url');
+                const isAvailable = await checkServiceAvailability(url);
+                updateCardStatus(card, isAvailable);
+            });
+        }
+
+        // Initial check and periodic retry
+        checkServices();
+        setInterval(checkServices, retryInterval);
+    </script>
 </body>
+
 </html>
