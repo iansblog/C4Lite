@@ -29,13 +29,17 @@ theme:
 plugins:
   - social
   - search
-  - mermaid2  # Added Mermaid plugin for diagram support  
-
+  - mermaid2  # Added Mermaid plugin for diagram support
+  - kroki:
+      server_url: http://localhost:7000  # Added Kroki plugin configuration
 
 extra:
   social:
     - icon: fontawesome/brands/github-alt
       link: https://github.com/iansblog
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.11.2/mermaid.min.js  # Added Mermaid JavaScript      
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -53,4 +57,3 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-

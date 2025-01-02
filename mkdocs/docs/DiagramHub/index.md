@@ -18,14 +18,14 @@ By integrating these tools, DiagramHub aims to provide a seamless, efficient wor
 
 This project includes PowerShell scripts to manage the Docker services and create backups. Here is a breakdown of the key components.
 
-## Helpfull Visual Studio Code Extentions
+### Helpfull Visual Studio Code Extentions
 - [https://marketplace.visualstudio.com/items?itemName=ciarant.vscode-structurizr](https://marketplace.visualstudio.com/items?itemName=ciarant.vscode-structurizr)
 - [https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
 
-# Project Structure
+## Project Structure
 
 
-## Files and Directories
+### Files and Directories
 ```
 .
 ├── docker-compose.yml      # Defines Docker services for Structurizr Lite, Mermaid Live Editor, MkDocs Material, and Nginx.
@@ -36,120 +36,127 @@ This project includes PowerShell scripts to manage the Docker services and creat
 └── README.md               # Documentation for the project.
 ```
 
-## Docker Compose Configuration
+### Docker Compose Configuration
 The `docker-compose.yml` and `docker-compose-ARM.yml` file defines the following services:
 
-# Docker Compose Services Description
+## Docker Compose Services Description
 
-## 1. Structurizr Lite
+This Docker Compose file defines a set of services for diagramming, documentation, and visualization tasks. Here's an updated breakdown:
+
+### Services
+
+#### 1. **Kroki**
+- **Purpose:** Diagram rendering service supporting various formats (PlantUML, Mermaid, Graphviz, etc.).
+- **Image:** `yuzutech/kroki`
+- **Ports:** Exposes port `7000` (mapped to container's `8000`).
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
+
+#### 2. **Structurizr Lite**
+- **Purpose:** Hosts a lightweight version of Structurizr for C4 modeling with DSL support.
 - **Image:** `structurizr/lite`
-- **Container Name:** `structurizrlite`
-- **Description:** Lightweight version of Structurizr for creating and editing software architecture diagrams.
-- **Ports:** 
-  - `8080:8080` (mapped to host)
-- **Volumes:** 
-  - `./dsl:/usr/local/structurizr` (to store DSL files)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Restart Policy:** `always`
+- **Volumes:** Maps local `./dsl` directory to `/usr/local/structurizr` in the container.
+- **Ports:** Accessible on port `8080`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
----
-
-## 2. Mermaid Live Editor
+#### 3. **Mermaid Live Editor**
+- **Purpose:** Provides a live editor for creating Mermaid diagrams.
 - **Image:** `ghcr.io/mermaid-js/mermaid-live-editor`
-- **Container Name:** `mermaid-live-editor`
-- **Description:** Live editor for creating and previewing Mermaid.js diagrams.
-- **Ports:** 
-  - `8081:8080` (mapped to host)
-- **Volumes:** 
-  - `./mermaid:/app/data` (to store diagram data)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Platform:** `linux/amd64`
-- **Restart Policy:** `always`
+- **Platform:** Runs on `linux/amd64`.
+- **Volumes:** Mounts local `./mermaid` directory to `/app/data` in the container.
+- **Ports:** Accessible on port `8081`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
----
+#### 4. **MkDocs Material**
+- **Purpose:** Hosts documentation built with MkDocs and the Material theme.
+- **Build:** Built from a custom Dockerfile (`customMkdocsBuild`) in the current directory.
+- **Volumes:** Mounts local `./mkdocs` directory to `/docs` in the container.
+- **Ports:** Accessible on port `8082`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
-## 3. MkDocs Material
-- **Build Context:** Local directory with a custom Dockerfile (`customMkdocsBuild`)
-- **Container Name:** `mkdocs-material`
-- **Description:** MkDocs with Material theme for building and serving documentation websites.
-- **Ports:** 
-  - `8082:8000` (mapped to host)
-- **Volumes:** 
-  - `./mkdocs:/docs` (to store MkDocs documentation files)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Restart Policy:** `always`
-
----
-
-## 4. PlantUML Server
+#### 5. **PlantUML Server**
+- **Purpose:** Provides a PlantUML rendering server.
 - **Image:** `plantuml/plantuml-server:jetty`
-- **Container Name:** `plantuml-server`
-- **Description:** Server for rendering PlantUML diagrams.
-- **Ports:** 
-  - `8083:8080` (mapped to host)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Restart Policy:** `always`
+- **Ports:** Accessible on port `8083`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
----
-
-## 5. Draw.io
+#### 6. **Draw.io**
+- **Purpose:** Hosts a collaborative diagramming tool (diagrams.net).
 - **Image:** `jgraph/drawio`
-- **Container Name:** `draw`
-- **Description:** Web-based diagramming tool for creating flowcharts, UML diagrams, and more.
-- **Ports:** 
-  - `8084:8080` (mapped to host)
-  - `8443:8443` (mapped to host, secure access)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Restart Policy:** `always`
+- **Ports:** Accessible on ports `8084` (HTTP) and `8443` (HTTPS).
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
----
-
-## 6. StackEdit
+#### 7. **StackEdit**
+- **Purpose:** Hosts a Markdown editor with collaborative features.
 - **Image:** `benweet/stackedit`
-- **Container Name:** `stackedit`
-- **Description:** Markdown editor for creating and editing documents with real-time preview.
-- **Ports:** 
-  - `8085:8080` (mapped to host)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Restart Policy:** `always`
+- **Ports:** Accessible on port `8085`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
----
+#### 8. **Niolesk**
+- **Purpose:** Offers an application integrated with Kroki for diagram rendering.
+- **Image:** `ghcr.io/webgiss/niolesk`
+- **Ports:** Accessible on port `8086`.
+- **Environment Variable:** Configures Kroki as its diagram rendering engine.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
 
-## 7. Nginx
+#### 9. **NGINX**
+- **Purpose:** Acts as a static file server or reverse proxy.
 - **Image:** `nginx:latest`
-- **Container Name:** `service-splash`
-- **Description:** Web server for serving static files or acting as a reverse proxy.
-- **Ports:** 
-  - `80:80` (mapped to host)
-- **Volumes:** 
-  - `./splash:/usr/share/nginx/html` (to store static files for the splash page)
-  - `./nginx/nginx.conf:/etc/nginx/nginx.conf` (to provide a custom Nginx configuration)
-- **Networks:** 
-  - `app_network` (shared with other services)
-- **Restart Policy:** `always`
+- **Volumes:**
+  - Mounts `./splash` to serve static HTML files.
+  - Uses a custom NGINX configuration file (`./nginx/nginx.conf`).
+- **Ports:** Maps container port `80` to host port `80`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
+
+### Networks
+
+#### `network_C4Lite`
+- **Driver:** Bridge network for inter-service communication.
 
 ---
+Overview
+```kroki-mermaid
+graph TD
+    subgraph Network: network_C4Lite
+        kroki[Kroki]
+        structurizrlite[Structurizr Lite]
+        mermaidLiveEditor[Mermaid Live Editor]
+        mkdocsMaterial[MkDocs Material]
+        plantUMLServer[PlantUML Server]
+        draw[Draw.io]
+        stackedit[StackEdit]
+        niolesk[Niolesk]
+        nginx[NGINX]
+    end
 
-## Network: app_network
-- **Driver:** `bridge`
-- **Description:** Shared network that connects all the services, allowing inter-service communication.
+    kroki ---|Port 7000| User
+    structurizrlite ---|Port 8080| User
+    mermaidLiveEditor ---|Port 8081| User
+    mkdocsMaterial ---|Port 8082| User
+    plantUMLServer ---|Port 8083| User
+    draw ---|Ports 8084, 8443| User
+    stackedit ---|Port 8085| User
+    niolesk ---|Port 8086| User
+    nginx ---|Port 80| User
+```
 
-
-## PowerShell Scripts
-### up.ps1:
+### PowerShell Scripts
+#### up.ps1:
 
 Starts the Docker services.
 - Opens the dsl directory in Visual Studio Code.
 - Opens the mkdocs directory in Visual Studio Code.
 - Waits for the Nginx service to be available and opens it in a browser.
 
-```mermaid
+```kroki-mermaid
 graph TD
     A[Start Script Execution] --> B[Get Current Directory]
     B --> C[Set Default Port to 80]
@@ -187,12 +194,12 @@ graph TD
     style Q fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-### down.ps1:
+#### down.ps1:
 - Stops the Docker services.
 - Creates a timestamped backup directory.
 - Copies the current files files to the backup directory.
 
-```mermaid
+```kroki-mermaid
 graph TD
     A[Start Script Execution] --> B[Get Current Directory]
     B --> C[Generate Timestamp for Backup Folder]
@@ -223,7 +230,7 @@ graph TD
     style H fill:#ff9,stroke:#333,stroke-width:2px
 ```
 
-## Usage Instructions
+### Usage Instructions
 
 1. **Start the Service**:
    Run the `up.ps1` script:
@@ -241,7 +248,7 @@ graph TD
 
 ---
 
-## Notes
+### Notes
 - Ensure Docker and Docker Compose are installed and configured.
 - Backup files are stored in the `Backup` directory under a timestamped folder.
 - The site runs at [http://localhost:80](http://localhost:80) by default.

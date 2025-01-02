@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.11.2/mermaid.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    mermaid.initialize({startOnLoad:true});
+  });
+</script>
+{% endblock %}

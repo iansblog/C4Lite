@@ -1,4 +1,14 @@
 services:
+
+  kroki:
+    image: yuzutech/kroki
+    container_name: kroki
+    ports:
+      - "7000:8000"
+    restart: always
+    networks:
+      - network_C4Lite
+
   structurizrlite:
     image: structurizr/lite
     container_name: structurizrlite
@@ -8,7 +18,7 @@ services:
       - "8080:8080"
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
 
   mermaid-live-editor:
     image: ghcr.io/mermaid-js/mermaid-live-editor
@@ -19,7 +29,7 @@ services:
       - "8081:8080"
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
 
   mkdocs-material:
     build:
@@ -32,7 +42,7 @@ services:
       - "8082:8000"
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
 
   plantuml-server:
     image: plantuml/plantuml-server:jetty
@@ -41,7 +51,7 @@ services:
       - "8083:8080"
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
 
   draw:
     image: jgraph/drawio
@@ -51,7 +61,7 @@ services:
       - "8443:8443"
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
 
   stackedit:
     image: benweet/stackedit
@@ -60,7 +70,19 @@ services:
       - "8085:8080"
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
+
+  niolesk:
+    image: "ghcr.io/webgiss/niolesk"
+    ports:
+      - "8086:80"
+    hostname: "niolesk"
+    restart: "always"
+    environment:
+      - "NIOLESK_KROKI_ENGINE=http://localhost:8000"    
+    networks:
+      - network_C4Lite
+
 
   nginx:
     image: nginx:latest
@@ -72,8 +94,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     restart: always
     networks:
-      - app_network
+      - network_C4Lite
 
 networks:
-  app_network:
+  network_C4Lite:
     driver: bridge

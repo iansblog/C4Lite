@@ -12,3 +12,4 @@
 
 # Table of contents 
 - [C4 Lite documentation (this should be open in VS Code already)](./DiagramHub/index.md)
+
