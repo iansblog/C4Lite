@@ -84,6 +84,14 @@ services:
     networks:
       - network_C4Lite
 
+  it-tools:
+    image: ghcr.io/corentinth/it-tools:latest
+    container_name: it-tools
+    ports:
+      - "8087:80"
+    restart: unless-stopped
+    networks:
+      - network_C4Lite
 
   nginx:
     image: nginx:latest

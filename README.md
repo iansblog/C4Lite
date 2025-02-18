@@ -13,6 +13,10 @@ For documentation:
 - MkDocs Material offers a sleek interface for creating static sites
 - StackEdit provides a robust Markdown editor with real-time preview.
 
+Other tooling:
+- IT Tools - A collection of essential IT tools for various tasks.
+
+
 
 By integrating these tools, DiagramHub aims to provide a seamless, efficient workflow for all your diagramming and documentation needs.
 
@@ -106,7 +110,16 @@ This Docker Compose file defines a set of services for diagramming, documentatio
 - **Restart Policy:** Always restarts on failure.
 - **Network:** Connected to `network_C4Lite`.
 
-### 9. **NGINX**
+
+### 9. **IT-Tools**
+- **Purpose:** Offers an application integrated with Kroki for diagram rendering.
+- **Image:** `ghcr.io/corentinth/it-tools:latest`
+- **Ports:** Accessible on port `8087`.
+- **Restart Policy:** Always restarts on failure.
+- **Network:** Connected to `network_C4Lite`.
+
+
+### 10. **NGINX**
 - **Purpose:** Acts as a static file server or reverse proxy.
 - **Image:** `nginx:latest`
 - **Volumes:**
@@ -133,6 +146,7 @@ graph TD
         stackedit[StackEdit]
         niolesk[Niolesk]
         nginx[NGINX]
+        it-tools[IT-Tools]
     end
 
     kroki ---|Port 7000| User
@@ -143,6 +157,7 @@ graph TD
     draw ---|Ports 8084, 8443| User
     stackedit ---|Port 8085| User
     niolesk ---|Port 8086| User
+    it-tools ---|Port 8087| User
     nginx ---|Port 80| User
 ```
 
